@@ -1,0 +1,71 @@
+// How to exclude fields sending from database to the server, such as user password, collection _id, and data update version _v?
+
+1) NOTE
+Exclude unnecessary field have 2 benefits.
+-Package send from database won't carry excluded data. People fetch the data, won't see it.
+-Smaller package send over internet, improve performance.
+
+
+2) Some field cannot exclude.
+-When create / save new data, the auto send back object cannot be exclude. Now just use the sent back object for debug.
+-For relational data that need to store and lookup reference field such as "id" to fetch related data, "id" field cannot be exclude, "id" looks like "_id", but it is a reference. Same for virtual populate which use user "_id"
+
+
+3) (server request in index.js) How to exclude fields when requesting from database?
+-For normal collection without reference. Such as "user"
+after ".find()" use ".select('-fields separate with space')" fields must belong to this collection
+EX:
+let foundUser = await User.find({username: userName})
+.select('-__v -userpassword');  // exclude version number and password
+
+-For related collection that reference other collection. Such as "resultbacklink"
+after ".find()" and ".select()" inside ".populate()" add '-fields separate with space' fields must belong to this collection
+EX:
+let allResultbacklink = await Resultbacklink.find()
+.select('-_id -__v -backlinks._id')
+.populate('user', '-_id -__v -userpassword')
+.exec();
+
+    // fields to exclude from resultbacklink
+    .select('-_id -__v -backlinks._id')
+    // 'user' is ResultbacklinkSchema's field name, fields to exclude from user
+    // note: populate reference user id using "id", so do not exclude "id"
+    .populate('user', '-_id -__v -userpassword')
+
+-For virtual related collection that being referenced by other collection. Such as "user"
+after ".find()", ".select()" fields to exclude from user, ".populate()" fields to exclude from virtual related collection
+EX:
+let foundUser = await User.find({username: userName})
+.select('-__v -userpassword')
+.populate('virtualResultbacklink', '-__v -_id -backlinks._id')
+.populate('virtualResultrelatedsearch', '-__v -_id -relatedsearchs._id')
+.exec();
+
+    // fields to exclude from user, need to include user '_id' for virtual populate
+    .select('-__v -userpassword')
+ 
+
+4) (Schema setting in user.js) How to exclude fields inside schema? This way, request must explicitly include the field inorder to get it.
+// when writing schema, use "select" option set to "false" to not allow query, request can still force include with .select('+userpassword')
+EX:
+userpassword: { 
+    type: String, 
+    trim: true,
+    required: [true, 'User must have a password'],
+    select: false
+},
+
+
+
+
+
+
+
+// other problems fix later
+
+// I think the newer version of node-fetch have problem
+// "mongoose": "^6.0.5",
+// "node-fetch": "^3.0.0"
+
+// mongoose DeprecationWarning
+https://stackoverflow.com/questions/51960171/node63208-deprecationwarning-collection-ensureindex-is-deprecated-use-creat

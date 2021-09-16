@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Try MongoDB Atlas CRUD</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="./app.js" defer></script>
+</head>
+<body>
+<div class="container pt-5">
+<div class="shadow jumbotron rounded">
+
+    <h5>MongoDB user model and result model</h5>
+    <h6>Save new user to database</h6>
+    <form id='form1' action="/">
+        User: 
+        <input type="text" name="newUserName" placeholder="EX: user0" style="width:20%;">
+        <br>
+        Password: 
+        <input type="text" name="newUserPassword" placeholder="EX: password0" style="width:20%;">
+    </form>
+    <button id='btnnewuser' class="btn btn-primary mt-3 mb-3">Save new user</button>
+    <hr>
+
+    <h6>Save result to given user / get results of given user</h6>
+    <form id='form2' action="/">
+        Existing user: 
+        <input type="text" name="userName" placeholder="EX: must be existing user" style="width:30%;">
+    </form>
+    <button id='btnnewresultbacklink' class="btn btn-primary mt-3 mb-3">Save new result backlink</button>
+    <button id='btnresultrelatedsearch' class="btn btn-primary mt-3 mb-3">Save new result related search</button>
+    <button id='btnshowresultbacklink' class="btn btn-warning mt-3 mb-3">Show results backlink</button>
+    <button id='btnshowresultrelatedsearch' class="btn btn-warning mt-3 mb-3">Show results related search</button>
+    <button id='btnfounduserresult' class="btn btn-primary mt-3 mb-3">Show found user results</button>
+	<hr>
+    <div id='result-list'></div>
+</div>
+</div>
+</body>
+</html>
